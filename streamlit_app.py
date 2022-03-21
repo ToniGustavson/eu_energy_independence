@@ -49,8 +49,8 @@ height = 1000 / scale
 st.set_page_config(
     page_title="Energy Independence",
     page_icon="🇪🇺",
-    layout="wide",
-    initial_sidebar_state="expanded",  # wide centered
+    layout="centered",
+    initial_sidebar_state="collapsed",  # wide centered collapsed expanded
 )
 
 hide_streamlit_style = """
@@ -63,9 +63,12 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 st.text("")
 st.markdown("# Reduktion Russischer Erdgas-Importe")
-st.markdown("## Auswirkungen auf die Versorgungssicherheit in Europa")
+# st.markdown("## Auswirkungen auf die Versorgungssicherheit in Europa")
 
 st.text("")
+st.markdown("Diese Seite ist umgezogen nach:")
+st.markdown("[https://share.streamlit.io/fzj-iek3-vsa/nostream](https://share.streamlit.io/fzj-iek3-vsa/nostream)")
+
 # st.markdown("Dashboard:")
 
 
@@ -265,570 +268,570 @@ with st.sidebar:
         "🔎 [Weitere Informationen](https://www.fz-juelich.de/iek/iek-3/DE/Home/home_node.html)"
     )  # 📜
 
-use_soc_slack = False
-
-# Energiebilanz
-st.markdown("## Erdgas-Bilanz")
-
-fig = go.Figure()
-xval = ["Bedarfe", "Import & Produktion", "Importlücke Russland", "Kompensation"]
-yempty = [0, 0, 0, 0]
-
-## Bedarfe
-ypos = 0
-yvals = yempty.copy()
-yvals[ypos] = total_domestic_demand
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Bedarfe",
-        legendgrouptitle_text="Bedarfe",
-        name="Haushalte",
-        marker=dict(color=FZJcolor.get("green")),
-    )
-)
-
-yvals[ypos] = total_ghd_demand
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Bedarfe",
-        name="GHD",
-        marker=dict(color=FZJcolor.get("purple2")),
-    )
-)
-
-yvals[ypos] = total_industry_demand
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Bedarfe",
-        name="Industrie",
-        marker=dict(color=FZJcolor.get("grey2")),
-    )
-)
-
-yvals[ypos] = total_electricity_demand
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Bedarfe",
-        name="Energie",
-        marker=dict(color=FZJcolor.get("blue")),
-    )
-)
-
-yvals[ypos] = total_exports_and_other
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Bedarfe",
-        name="Export etc.",
-        marker=dict(color=FZJcolor.get("blue2")),
-    )
-)
-
-## Import & Produktion
-ypos = 1
-yvals = yempty.copy()
-yvals[ypos] = total_import
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Import & Produktion",
-        legendgrouptitle_text="Import & Produktion",
-        name="Import",
-        marker=dict(color=FZJcolor.get("orange")),
-    )
-)
-
-yvals[ypos] = total_production
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Import & Produktion",
-        name="Produktion",
-        marker=dict(color=FZJcolor.get("green2")),
-    )
-)
-
-
-## Importlücke
-ypos = 2
-yvals = yempty.copy()
-yvals[ypos] = total_import_russia * pl_reduction
-
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Importlücke",
-        legendgrouptitle_text="Importlücke",
-        name="Import Russland",
-        marker=dict(color=FZJcolor.get("red")),
-    )
-)
-
-## Kompensation
-ypos = 3
-yvals = yempty.copy()
-yvals[ypos] = total_domestic_demand * red_dom_dem
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Kompensation",
-        legendgrouptitle_text="Kompensation",
-        name="Haushalte (Nachfragereduktion)",
-        marker=dict(color=FZJcolor.get("green")),
-    )
-)
-
-yvals[ypos] = total_ghd_demand * red_ghd_dem
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Kompensation",
-        name="GHD (Nachfragereduktion)",
-        marker=dict(color=FZJcolor.get("purple2")),
-    )
-)
-
-yvals[ypos] = total_industry_demand * red_ind_dem
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Kompensation",
-        name="Industrie (Nachfragereduktion)",
-        marker=dict(color=FZJcolor.get("grey2")),
-    )
-)
-
-yvals[ypos] = total_electricity_demand * red_elec_dem
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Kompensation",
-        name="Energie (Nachfragereduktion)",
-        marker=dict(color=FZJcolor.get("blue")),
-    )
-)
-
-yvals[ypos] = total_exports_and_other * red_exp_dem
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Kompensation",
-        name="Export etc. (Nachfragereduktion)",
-        marker=dict(color=FZJcolor.get("blue2")),
-    )
-)
-
-yvals[ypos] = lng_add_import
-fig.add_trace(
-    go.Bar(
-        x=xval,
-        y=yvals,
-        legendgroup="Kompensation",
-        name="LNG Kapazitätserhöhung",
-        marker=dict(color=FZJcolor.get("yellow3")),
-    )
-)
-
-
-fig.update_layout(
-    title=f"Status Quo, Import-Lücke und Kompensationsmöglichkeiten ",
-    yaxis_title="Erdgas [TWh/a]",
-    barmode="stack",
-    font=font_dict,
-    # legend=legend_dict,
-)
-# fig.update_layout(showlegend=False)
-
-st.plotly_chart(fig, use_container_width=True)
-
-
-def plot_optimization_results(df):
-    # Demand
-    total_demand = df.domDem + df.elecDem + df.indDem + df.ghdDem + df.exp_n_oth
-    total_demand_served = (
-        df.domDem_served
-        + df.elecDem_served
-        + df.indDem_served
-        + df.ghdDem_served
-        + df.exp_n_oth_served
-    )
-    unserved_demand = total_demand - total_demand_served
-
-    fig = go.Figure()
-    xvals = df.time
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.domDem_served,
-            stackgroup="one",
-            legendgroup="bedarf",
-            name="Haushalte",
-            mode="none",
-            fillcolor=FZJcolor.get("green")
-            # marker=marker_dict,
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.ghdDem_served,
-            stackgroup="one",
-            legendgroup="bedarf",
-            name="GHD",
-            mode="none",
-            fillcolor=FZJcolor.get("purple2"),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.elecDem_served,
-            stackgroup="one",
-            legendgroup="bedarf",
-            name="Energie",
-            mode="none",
-            fillcolor=FZJcolor.get("blue"),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.indDem_served,
-            stackgroup="one",
-            legendgroup="bedarf",
-            legendgrouptitle_text="Erdgasbedarfe",
-            name="Industrie",
-            mode="none",
-            fillcolor=FZJcolor.get("grey2"),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.exp_n_oth_served,
-            stackgroup="one",
-            legendgroup="bedarf",
-            name="Export und sonstige",
-            mode="none",
-            fillcolor=FZJcolor.get("blue2"),
-        )
-    )
-
-    if sum(unserved_demand) > 0.001:
-        fig.add_trace(
-            go.Scatter(
-                x=xvals,
-                y=total_demand - total_demand_served,
-                stackgroup="one",
-                legendgroup="bedarf",
-                name=f"Abgeregelt ({int(sum(unserved_demand))} TWh)",
-                mode="none",
-                fillcolor=FZJcolor.get("red"),
-            )
-        )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.lngImp_served,
-            stackgroup="two",
-            line=dict(color=FZJcolor.get("yellow3"), width=3.5),
-            legendgroup="import",
-            legendgrouptitle_text="Erdgasimport",
-            name="LNG Import",
-            fillcolor="rgba(0, 0, 0, 0)",
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.pipeImp_served,
-            stackgroup="two",
-            line=dict(color=FZJcolor.get("orange"), width=3.5),
-            legendgroup="import",
-            name="Pipeline Import",
-            fillcolor="rgba(0, 0, 0, 0)",
-        )
-    )
-
-    fig.update_layout(
-        title=f"Erdgasbedarfe und Import",
-        font=font_dict,
-        yaxis_title="Erdgas [TWh/h]",
-        # legend=legend_dict,
-    )
-    # fig.update_layout(showlegend=False)
-
-    if write_image:
-        fig.write_image(
-            f"Output/Optimierung_Erdgasbedarf_{scenario_name}.png",
-            width=width,
-            height=height,
-            # scale=scale,
-        )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    ## SOC
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.soc,
-            stackgroup="one",
-            name="Füllstand",
-            mode="none",
-            fillcolor=FZJcolor.get("orange"),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=np.ones(len(xvals)) * 1100,
-            name="Speicherkapazität",
-            line=dict(color=FZJcolor.get("black"), width=2),
-            fillcolor="rgba(0, 0, 0, 0)",
-        )
-    )
-
-    fig.update_layout(
-        title=f"Speicherfüllstand",
-        font=font_dict,
-        yaxis_title="Erdgas [TWh]",
-        legend=legend_dict,
-    )
-    # fig.update_layout(showlegend=False)
-
-    if write_image:
-        fig.write_image(
-            f"Output/Optimierung_Speicher_{scenario_name}.png",
-            width=width,
-            height=height,
-            # scale=scale,
-        )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    ##  Pipeline Import
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.pipeImp_served,
-            stackgroup="one",
-            name="Pipeline Import",
-            mode="none",
-            fillcolor=FZJcolor.get("orange"),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=df.lngImp_served,
-            stackgroup="one",
-            name="LNG Import",
-            mode="none",
-            fillcolor=FZJcolor.get("yellow3"),
-        )
-    )
-
-    fig.update_layout(
-        title=f"Erdgasimporte", yaxis_title="Erdgas [TWh/h]", legend=legend_dict,
-    )
-    st.plotly_chart(fig, use_container_width=True)
-
-    ## Storage Charge and discharge
-    storage_operation = df.lngImp_served + df.pipeImp_served - total_demand_served
-    storage_discharge = [min(0, x) for x in storage_operation]
-    storage_charge = np.array([max(0, x) for x in storage_operation])
-
-    storage_operation_pl = df.pipeImp_served - total_demand_served
-    storage_charge_pl = np.array([max(0, x) for x in storage_operation_pl])
-
-    storage_operation_lng = storage_charge - storage_charge_pl
-    storage_charge_lng = np.array([max(0, x) for x in storage_operation_lng])
-
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=storage_discharge,
-            stackgroup="two",
-            name="Ausspeicherung",
-            mode="none",
-            fillcolor=FZJcolor.get("red"),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=storage_charge_pl,
-            stackgroup="one",
-            name="Speicherung (Pipeline)",
-            mode="none",
-            fillcolor=FZJcolor.get("orange"),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x=xvals,
-            y=storage_charge_lng,
-            stackgroup="one",
-            name="Speicherung (LNG)",
-            mode="none",
-            fillcolor=FZJcolor.get("yellow3"),
-        )
-    )
-
-    fig.update_layout(
-        title=f"Ein- und Ausspeicherung Gasspeicher",
-        yaxis_title="Erdgas [TWh/h]",
-        legend=legend_dict,
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-
-def hash_from_tuple(t):
-    # m = hashlib.md5()
-    res = ""
-    for s in t:
-        s = str(s)
-        res += s
-        # m.update(s.encode())
-    return res  # m.hexdigest()
-
-
-hash_val = hash_from_tuple(
-    (
-        total_import,
-        total_production,
-        total_import_russia,
-        total_domestic_demand,
-        total_ghd_demand,
-        total_electricity_demand,
-        total_industry_demand,
-        total_exports_and_other,
-        red_dom_dem,
-        red_elec_dem,
-        red_ghd_dem,
-        red_ind_dem,
-        red_exp_dem,
-        import_stop_date,
-        demand_reduction_date,
-        lng_increase_date,
-        russ_share,
-        lng_add_import,
-        use_soc_slack,
-    )
-)
-default_hash = "41906081752926421151511109880.130.20.080.080.02022-04-16 00:00:002022-03-16 00:00:002022-05-01 00:00:000.0965False"  # 3073516694676277863
-# st.write(hash_val)
-
-st.markdown("## Optimierungsergebnisse")
-start_opti = False
-
-if hash_val != default_hash:
-    start_opti = st.button("Optimierung ausführen")
-
-
-if start_opti:
-    with st.spinner(
-        text="Starte Optimierung. Rechnezeit kann 3-5 Minuten in Anspruch nehmen ☕ ..."
-    ):
-        try:
-            df, input_data = opti.run_scenario(
-                total_import=total_import,
-                total_production=total_production,
-                total_import_russia=total_import_russia,
-                total_domestic_demand=total_domestic_demand,
-                total_ghd_demand=total_ghd_demand,
-                total_electricity_demand=total_electricity_demand,
-                total_industry_demand=total_industry_demand,
-                total_exports_and_other=total_exports_and_other,
-                red_dom_dem=red_dom_dem,
-                red_elec_dem=red_elec_dem,
-                red_ghd_dem=red_ghd_dem,
-                red_ind_dem=red_ind_dem,
-                red_exp_dem=red_exp_dem,
-                import_stop_date=import_stop_date,
-                demand_reduction_date=demand_reduction_date,
-                lng_increase_date=lng_increase_date,
-                russ_share=russ_share,
-                lng_add_import=lng_add_import,
-                use_soc_slack=use_soc_slack,
-            )
-            plot_optimization_results(df)
-        except Exception as e:
-            st.write(e)
-
-if hash_val == default_hash:
-    if not start_opti:
-        with st.spinner(text="Lade Ergebnisse..."):
-            df = pd.read_excel("Results_Optimization/default_results.xlsx", index_col=0)
-            plot_optimization_results(df)
-            input_data = pd.read_excel(
-                "Results_Optimization/default_inputs.xlsx", index_col=0
-            )
-
-if start_opti or hash_val == default_hash:
-    short_hash = int(abs(hash(hash_val)))
-    download_df(
-        df,
-        f"Optimierungsergebnisse_{short_hash}.csv",
-        "Optimierungsergebnisse herunterladen",
-    )
-    download_df(
-        input_data, f"Input_Daten_{short_hash}.csv", "Input-Daten herunterladen",
-    )
-
-
-st.markdown("## Analyse: Energieversorgung ohne russisches Erdgas")
-download_pdf(
-    "Input/Analyse.pdf",
-    "Analyse_energySupplyWithoutRussianGasAnalysis.pdf",
-    "Analyse herunterladen",
-)
-
-displayPDF("Input/Analyse.pdf", width=900, height=635)
-
-
-st.text("")
-
-st.markdown("## Pressemitteilung")
-download_pdf(
-    "Input/Pressemitteilung.pdf",
-    "Pressemitteilung_energySupplyWithoutRussianGasAnalysis.pdf",
-    "Pressemitteilung herunterladen",
-)
-displayPDF("Input/Pressemitteilung.pdf", width=900, height=635)
+# use_soc_slack = False
+
+# # Energiebilanz
+# st.markdown("## Erdgas-Bilanz")
+
+# fig = go.Figure()
+# xval = ["Bedarfe", "Import & Produktion", "Importlücke Russland", "Kompensation"]
+# yempty = [0, 0, 0, 0]
+
+# ## Bedarfe
+# ypos = 0
+# yvals = yempty.copy()
+# yvals[ypos] = total_domestic_demand
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Bedarfe",
+#         legendgrouptitle_text="Bedarfe",
+#         name="Haushalte",
+#         marker=dict(color=FZJcolor.get("green")),
+#     )
+# )
+
+# yvals[ypos] = total_ghd_demand
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Bedarfe",
+#         name="GHD",
+#         marker=dict(color=FZJcolor.get("purple2")),
+#     )
+# )
+
+# yvals[ypos] = total_industry_demand
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Bedarfe",
+#         name="Industrie",
+#         marker=dict(color=FZJcolor.get("grey2")),
+#     )
+# )
+
+# yvals[ypos] = total_electricity_demand
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Bedarfe",
+#         name="Energie",
+#         marker=dict(color=FZJcolor.get("blue")),
+#     )
+# )
+
+# yvals[ypos] = total_exports_and_other
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Bedarfe",
+#         name="Export etc.",
+#         marker=dict(color=FZJcolor.get("blue2")),
+#     )
+# )
+
+# ## Import & Produktion
+# ypos = 1
+# yvals = yempty.copy()
+# yvals[ypos] = total_import
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Import & Produktion",
+#         legendgrouptitle_text="Import & Produktion",
+#         name="Import",
+#         marker=dict(color=FZJcolor.get("orange")),
+#     )
+# )
+
+# yvals[ypos] = total_production
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Import & Produktion",
+#         name="Produktion",
+#         marker=dict(color=FZJcolor.get("green2")),
+#     )
+# )
+
+
+# ## Importlücke
+# ypos = 2
+# yvals = yempty.copy()
+# yvals[ypos] = total_import_russia * pl_reduction
+
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Importlücke",
+#         legendgrouptitle_text="Importlücke",
+#         name="Import Russland",
+#         marker=dict(color=FZJcolor.get("red")),
+#     )
+# )
+
+# ## Kompensation
+# ypos = 3
+# yvals = yempty.copy()
+# yvals[ypos] = total_domestic_demand * red_dom_dem
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Kompensation",
+#         legendgrouptitle_text="Kompensation",
+#         name="Haushalte (Nachfragereduktion)",
+#         marker=dict(color=FZJcolor.get("green")),
+#     )
+# )
+
+# yvals[ypos] = total_ghd_demand * red_ghd_dem
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Kompensation",
+#         name="GHD (Nachfragereduktion)",
+#         marker=dict(color=FZJcolor.get("purple2")),
+#     )
+# )
+
+# yvals[ypos] = total_industry_demand * red_ind_dem
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Kompensation",
+#         name="Industrie (Nachfragereduktion)",
+#         marker=dict(color=FZJcolor.get("grey2")),
+#     )
+# )
+
+# yvals[ypos] = total_electricity_demand * red_elec_dem
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Kompensation",
+#         name="Energie (Nachfragereduktion)",
+#         marker=dict(color=FZJcolor.get("blue")),
+#     )
+# )
+
+# yvals[ypos] = total_exports_and_other * red_exp_dem
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Kompensation",
+#         name="Export etc. (Nachfragereduktion)",
+#         marker=dict(color=FZJcolor.get("blue2")),
+#     )
+# )
+
+# yvals[ypos] = lng_add_import
+# fig.add_trace(
+#     go.Bar(
+#         x=xval,
+#         y=yvals,
+#         legendgroup="Kompensation",
+#         name="LNG Kapazitätserhöhung",
+#         marker=dict(color=FZJcolor.get("yellow3")),
+#     )
+# )
+
+
+# fig.update_layout(
+#     title=f"Status Quo, Import-Lücke und Kompensationsmöglichkeiten ",
+#     yaxis_title="Erdgas [TWh/a]",
+#     barmode="stack",
+#     font=font_dict,
+#     # legend=legend_dict,
+# )
+# # fig.update_layout(showlegend=False)
+
+# st.plotly_chart(fig, use_container_width=True)
+
+
+# def plot_optimization_results(df):
+#     # Demand
+#     total_demand = df.domDem + df.elecDem + df.indDem + df.ghdDem + df.exp_n_oth
+#     total_demand_served = (
+#         df.domDem_served
+#         + df.elecDem_served
+#         + df.indDem_served
+#         + df.ghdDem_served
+#         + df.exp_n_oth_served
+#     )
+#     unserved_demand = total_demand - total_demand_served
+
+#     fig = go.Figure()
+#     xvals = df.time
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.domDem_served,
+#             stackgroup="one",
+#             legendgroup="bedarf",
+#             name="Haushalte",
+#             mode="none",
+#             fillcolor=FZJcolor.get("green")
+#             # marker=marker_dict,
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.ghdDem_served,
+#             stackgroup="one",
+#             legendgroup="bedarf",
+#             name="GHD",
+#             mode="none",
+#             fillcolor=FZJcolor.get("purple2"),
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.elecDem_served,
+#             stackgroup="one",
+#             legendgroup="bedarf",
+#             name="Energie",
+#             mode="none",
+#             fillcolor=FZJcolor.get("blue"),
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.indDem_served,
+#             stackgroup="one",
+#             legendgroup="bedarf",
+#             legendgrouptitle_text="Erdgasbedarfe",
+#             name="Industrie",
+#             mode="none",
+#             fillcolor=FZJcolor.get("grey2"),
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.exp_n_oth_served,
+#             stackgroup="one",
+#             legendgroup="bedarf",
+#             name="Export und sonstige",
+#             mode="none",
+#             fillcolor=FZJcolor.get("blue2"),
+#         )
+#     )
+
+#     if sum(unserved_demand) > 0.001:
+#         fig.add_trace(
+#             go.Scatter(
+#                 x=xvals,
+#                 y=total_demand - total_demand_served,
+#                 stackgroup="one",
+#                 legendgroup="bedarf",
+#                 name=f"Abgeregelt ({int(sum(unserved_demand))} TWh)",
+#                 mode="none",
+#                 fillcolor=FZJcolor.get("red"),
+#             )
+#         )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.lngImp_served,
+#             stackgroup="two",
+#             line=dict(color=FZJcolor.get("yellow3"), width=3.5),
+#             legendgroup="import",
+#             legendgrouptitle_text="Erdgasimport",
+#             name="LNG Import",
+#             fillcolor="rgba(0, 0, 0, 0)",
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.pipeImp_served,
+#             stackgroup="two",
+#             line=dict(color=FZJcolor.get("orange"), width=3.5),
+#             legendgroup="import",
+#             name="Pipeline Import",
+#             fillcolor="rgba(0, 0, 0, 0)",
+#         )
+#     )
+
+#     fig.update_layout(
+#         title=f"Erdgasbedarfe und Import",
+#         font=font_dict,
+#         yaxis_title="Erdgas [TWh/h]",
+#         # legend=legend_dict,
+#     )
+#     # fig.update_layout(showlegend=False)
+
+#     if write_image:
+#         fig.write_image(
+#             f"Output/Optimierung_Erdgasbedarf_{scenario_name}.png",
+#             width=width,
+#             height=height,
+#             # scale=scale,
+#         )
+
+#     st.plotly_chart(fig, use_container_width=True)
+
+#     ## SOC
+#     fig = go.Figure()
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.soc,
+#             stackgroup="one",
+#             name="Füllstand",
+#             mode="none",
+#             fillcolor=FZJcolor.get("orange"),
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=np.ones(len(xvals)) * 1100,
+#             name="Speicherkapazität",
+#             line=dict(color=FZJcolor.get("black"), width=2),
+#             fillcolor="rgba(0, 0, 0, 0)",
+#         )
+#     )
+
+#     fig.update_layout(
+#         title=f"Speicherfüllstand",
+#         font=font_dict,
+#         yaxis_title="Erdgas [TWh]",
+#         legend=legend_dict,
+#     )
+#     # fig.update_layout(showlegend=False)
+
+#     if write_image:
+#         fig.write_image(
+#             f"Output/Optimierung_Speicher_{scenario_name}.png",
+#             width=width,
+#             height=height,
+#             # scale=scale,
+#         )
+
+#     st.plotly_chart(fig, use_container_width=True)
+
+#     ##  Pipeline Import
+#     fig = go.Figure()
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.pipeImp_served,
+#             stackgroup="one",
+#             name="Pipeline Import",
+#             mode="none",
+#             fillcolor=FZJcolor.get("orange"),
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=df.lngImp_served,
+#             stackgroup="one",
+#             name="LNG Import",
+#             mode="none",
+#             fillcolor=FZJcolor.get("yellow3"),
+#         )
+#     )
+
+#     fig.update_layout(
+#         title=f"Erdgasimporte", yaxis_title="Erdgas [TWh/h]", legend=legend_dict,
+#     )
+#     st.plotly_chart(fig, use_container_width=True)
+
+#     ## Storage Charge and discharge
+#     storage_operation = df.lngImp_served + df.pipeImp_served - total_demand_served
+#     storage_discharge = [min(0, x) for x in storage_operation]
+#     storage_charge = np.array([max(0, x) for x in storage_operation])
+
+#     storage_operation_pl = df.pipeImp_served - total_demand_served
+#     storage_charge_pl = np.array([max(0, x) for x in storage_operation_pl])
+
+#     storage_operation_lng = storage_charge - storage_charge_pl
+#     storage_charge_lng = np.array([max(0, x) for x in storage_operation_lng])
+
+#     fig = go.Figure()
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=storage_discharge,
+#             stackgroup="two",
+#             name="Ausspeicherung",
+#             mode="none",
+#             fillcolor=FZJcolor.get("red"),
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=storage_charge_pl,
+#             stackgroup="one",
+#             name="Speicherung (Pipeline)",
+#             mode="none",
+#             fillcolor=FZJcolor.get("orange"),
+#         )
+#     )
+
+#     fig.add_trace(
+#         go.Scatter(
+#             x=xvals,
+#             y=storage_charge_lng,
+#             stackgroup="one",
+#             name="Speicherung (LNG)",
+#             mode="none",
+#             fillcolor=FZJcolor.get("yellow3"),
+#         )
+#     )
+
+#     fig.update_layout(
+#         title=f"Ein- und Ausspeicherung Gasspeicher",
+#         yaxis_title="Erdgas [TWh/h]",
+#         legend=legend_dict,
+#     )
+
+#     st.plotly_chart(fig, use_container_width=True)
+
+
+# def hash_from_tuple(t):
+#     # m = hashlib.md5()
+#     res = ""
+#     for s in t:
+#         s = str(s)
+#         res += s
+#         # m.update(s.encode())
+#     return res  # m.hexdigest()
+
+
+# hash_val = hash_from_tuple(
+#     (
+#         total_import,
+#         total_production,
+#         total_import_russia,
+#         total_domestic_demand,
+#         total_ghd_demand,
+#         total_electricity_demand,
+#         total_industry_demand,
+#         total_exports_and_other,
+#         red_dom_dem,
+#         red_elec_dem,
+#         red_ghd_dem,
+#         red_ind_dem,
+#         red_exp_dem,
+#         import_stop_date,
+#         demand_reduction_date,
+#         lng_increase_date,
+#         russ_share,
+#         lng_add_import,
+#         use_soc_slack,
+#     )
+# )
+# default_hash = "41906081752926421151511109880.130.20.080.080.02022-04-16 00:00:002022-03-16 00:00:002022-05-01 00:00:000.0965False"  # 3073516694676277863
+# # st.write(hash_val)
+
+# st.markdown("## Optimierungsergebnisse")
+# start_opti = False
+
+# if hash_val != default_hash:
+#     start_opti = st.button("Optimierung ausführen")
+
+
+# if start_opti:
+#     with st.spinner(
+#         text="Starte Optimierung. Rechnezeit kann 3-5 Minuten in Anspruch nehmen ☕ ..."
+#     ):
+#         try:
+#             df, input_data = opti.run_scenario(
+#                 total_import=total_import,
+#                 total_production=total_production,
+#                 total_import_russia=total_import_russia,
+#                 total_domestic_demand=total_domestic_demand,
+#                 total_ghd_demand=total_ghd_demand,
+#                 total_electricity_demand=total_electricity_demand,
+#                 total_industry_demand=total_industry_demand,
+#                 total_exports_and_other=total_exports_and_other,
+#                 red_dom_dem=red_dom_dem,
+#                 red_elec_dem=red_elec_dem,
+#                 red_ghd_dem=red_ghd_dem,
+#                 red_ind_dem=red_ind_dem,
+#                 red_exp_dem=red_exp_dem,
+#                 import_stop_date=import_stop_date,
+#                 demand_reduction_date=demand_reduction_date,
+#                 lng_increase_date=lng_increase_date,
+#                 russ_share=russ_share,
+#                 lng_add_import=lng_add_import,
+#                 use_soc_slack=use_soc_slack,
+#             )
+#             plot_optimization_results(df)
+#         except Exception as e:
+#             st.write(e)
+
+# if hash_val == default_hash:
+#     if not start_opti:
+#         with st.spinner(text="Lade Ergebnisse..."):
+#             df = pd.read_excel("Results_Optimization/default_results.xlsx", index_col=0)
+#             plot_optimization_results(df)
+#             input_data = pd.read_excel(
+#                 "Results_Optimization/default_inputs.xlsx", index_col=0
+#             )
+
+# if start_opti or hash_val == default_hash:
+#     short_hash = int(abs(hash(hash_val)))
+#     download_df(
+#         df,
+#         f"Optimierungsergebnisse_{short_hash}.csv",
+#         "Optimierungsergebnisse herunterladen",
+#     )
+#     download_df(
+#         input_data, f"Input_Daten_{short_hash}.csv", "Input-Daten herunterladen",
+#     )
+
+
+# st.markdown("## Analyse: Energieversorgung ohne russisches Erdgas")
+# download_pdf(
+#     "Input/Analyse.pdf",
+#     "Analyse_energySupplyWithoutRussianGasAnalysis.pdf",
+#     "Analyse herunterladen",
+# )
+
+# displayPDF("Input/Analyse.pdf", width=900, height=635)
+
+
+# st.text("")
+
+# st.markdown("## Pressemitteilung")
+# download_pdf(
+#     "Input/Pressemitteilung.pdf",
+#     "Pressemitteilung_energySupplyWithoutRussianGasAnalysis.pdf",
+#     "Pressemitteilung herunterladen",
+# )
+# displayPDF("Input/Pressemitteilung.pdf", width=900, height=635)
